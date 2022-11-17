@@ -1,0 +1,7 @@
+{
+  "editor.formatOnSave": true,
+  "python.formatting.blackPath": ".venv/bin/black",
+  "python.defaultInterpreterPath": ".venv/bin/python",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.formatting.provider": "black"
+}
