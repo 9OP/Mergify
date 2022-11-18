@@ -1,22 +1,36 @@
-import fastapi
+from fastapi import APIRouter, Depends, FastAPI
 
 
-router = fastapi.APIRouter()
+from .github_client import GithubClient
+from .starneighbours import Service as StarneighboursService
 
 
-async def root():
-    return {"message": "Hello World"}
+router = APIRouter()
+
+
+def starneighbours_service():
+    repository = GithubClient()
+    service = StarneighboursService(repository=repository)
+    return service
+
+
+async def endpoint(
+    user: str,
+    repo: str,
+    service: StarneighboursService = Depends(starneighbours_service),
+):
+    starneighbours = await service.get_starneighbours(user=user, repo=repo)
+    return starneighbours
 
 
 router.add_api_route(
-    path="/",
+    path="/repos/{user:str}/{repo:str}/starneighbours",
     methods=["GET"],
-    endpoint=root,
+    endpoint=endpoint,
 )
 
 
-def create_app() -> fastapi.FastAPI:
-    app = fastapi.FastAPI()
+def create_app() -> FastAPI:
+    app = FastAPI()
     app.include_router(router)
-
     return app

@@ -3,5 +3,12 @@
   "python.formatting.blackPath": ".venv/bin/black",
   "python.defaultInterpreterPath": ".venv/bin/python",
   "python.analysis.typeCheckingMode": "basic",
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "python.languageServer": "Pylance",
+  "typescript.tsserver.maxTsServerMemory": 3072,
+  "typescript.tsserver.watchOptions": {
+    "watchFile": "dynamicPriorityPolling"
+  },
+  "javascript.suggest.includeAutomaticOptionalChainCompletions": false,
+  "debug.saveBeforeStart": "none"
 }
