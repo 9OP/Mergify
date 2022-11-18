@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 from asyncio import create_task, gather, Task
 from functools import partial
+from fastapi.logger import logger
 
 
 from src.models.starneighbours import Stargazer, GithubRepo, Starneighbours
@@ -15,7 +16,7 @@ class Client(ABC):
         pass
 
     @abstractmethod
-    async def get_starred(self, user: str, count: int) -> list[GithubRepo]:
+    async def get_starred(self, user: str) -> list[GithubRepo]:
         pass
 
 
@@ -34,7 +35,12 @@ class Service:
             repo=repo,
             count=user_limit,
         )
+        logger.info(f"fetched {len(stargazers)} stargazers for {owner}/{repo}")
+
         starneighbours = await self.__fetch_starneighbours_in_parallel(stargazers)
+
+        logger.info(f"found {len(starneighbours)} neighbours repos for {owner}/{repo}")
+
         return self.__format_starneighbours(starneighbours)
 
     async def __fetch_starneighbours_in_parallel(
@@ -43,7 +49,7 @@ class Service:
         starneighbours_dict: StarneighboursDict = defaultdict(list)
 
         async def fetch_starneighbours(stargazer_name: str):
-            gh_repos = await self._client.get_starred(stargazer_name, count=4)
+            gh_repos = await self._client.get_starred(stargazer_name)
             for gh_repo in gh_repos:
                 starneighbours_dict[gh_repo.name].append(stargazer_name)
 

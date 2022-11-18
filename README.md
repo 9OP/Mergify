@@ -27,11 +27,6 @@ docker run -v $(pwd):/app -p 8080:8080 stargazer
 
 
 TODO:
-- ok implements endpoint
-- ok - add uvicorn
-- ok - add pre commit hook (black, flake8)
-- add logging
-- ok update architecture (domain, usecase, infrastructure)
-- ok add docker
+- use case multiple fetch of stargazers and repo
 - add tests
 - add authentication (via session cookie + .env credentials)

@@ -1,5 +1,8 @@
 from fastapi import APIRouter, Depends, FastAPI
-
+from dotenv import load_dotenv
+from os import path, environ
+from fastapi.logger import logger
+from logging import getLogger
 
 from .clients.github import GithubClient
 from .models.starneighbours import Starneighbours
@@ -11,7 +14,7 @@ router = APIRouter()
 
 
 def starneighbours_service():
-    client = GithubClient()
+    client = GithubClient(token=environ.get("GITHUB_TOKEN", ""))
     service = StarneighboursService(client=client)
     return service
 
@@ -19,7 +22,7 @@ def starneighbours_service():
 async def endpoint(
     owner: str,
     repo: str,
-    user_limit: int = 20,
+    user_limit: int = 10,
     service: StarneighboursService = Depends(starneighbours_service),
 ):
     starneighbours = await service.get_starneighbours(
@@ -39,10 +42,24 @@ router.add_api_route(
 )
 
 
+def load_config():
+    dotenv_file = path.join(path.dirname(__file__), "../.env")
+    if path.exists(dotenv_file):
+        load_dotenv(dotenv_file)
+
+
+def set_logger():
+    uvicorn_logger = getLogger("uvicorn")
+    logger.handlers = uvicorn_logger.handlers
+    logger.setLevel(uvicorn_logger.level)
+
+
 def create_app() -> FastAPI:
+    load_config()
+    set_logger()
+
     app = FastAPI()
     app.include_router(router)
-
     setup_exception_handlers(app)
 
     return app
