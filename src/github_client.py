@@ -27,6 +27,7 @@ class GithubClient(Repository):
                 params={"per_page": count},
             )
         data = await res.json()
+        print(data)
 
         # TODO: handle error case when data does not contains stargazers
         stargazers: list[Stargazer] = []
