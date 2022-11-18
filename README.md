@@ -12,19 +12,26 @@ pre-commit run --all-files
 
 # Run server
 ./run.sh
+```
 
-# Send request to server
-curl http...
+Or via Docker
+
+```sh
+# Build image
+docker build -t stargazer .
+
+# Start container
+docker run -v $(pwd):/app -p 8080:8080 stargazer
 ```
 
 
 
 TODO:
-- implements endpoint
+- ok implements endpoint
 - ok - add uvicorn
 - ok - add pre commit hook (black, flake8)
 - add logging
-- update architecture (domain, usecase, infrastructure)
-- add docker
+- ok update architecture (domain, usecase, infrastructure)
+- ok add docker
 - add tests
 - add authentication (via session cookie + .env credentials)

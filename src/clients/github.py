@@ -1,8 +1,9 @@
 import aiohttp
 from contextlib import asynccontextmanager
 
-from .starneighbours import Repository
-from .models import Stargazer, GithubRepo
+from src.responses import GithubError
+from src.services.starneighbours import Client
+from src.models.starneighbours import Stargazer, GithubRepo
 
 
 @asynccontextmanager
@@ -14,7 +15,7 @@ async def aio_session():
         await session.close()
 
 
-class GithubClient(Repository):
+class GithubClient(Client):
     async def get_stargazers(
         self, owner: str, repo: str, count: int
     ) -> list[Stargazer]:
@@ -26,10 +27,12 @@ class GithubClient(Repository):
                 headers={"Accept": "application/vnd.github+json"},
                 params={"per_page": count},
             )
-        data = await res.json()
-        print(data)
 
-        # TODO: handle error case when data does not contains stargazers
+            if not res.ok:
+                raise GithubError(res.status, str(res.reason))
+
+        data = await res.json()
+
         stargazers: list[Stargazer] = []
         for stargazer in data:
             stargazers.append(Stargazer(name=stargazer["login"]))
@@ -45,9 +48,12 @@ class GithubClient(Repository):
                 headers={"Accept": "application/vnd.github+json"},
                 params={"per_page": count},
             )
+
+            if not res.ok:
+                raise GithubError(res.status, str(res.reason))
+
         data = await res.json()
 
-        # TODO: handle error case when data does not contains repositories
         gh_repositories: list[GithubRepo] = []
         for repo in data:
             gh_repositories.append(GithubRepo(name=repo["name"]))
