@@ -1,10 +1,6 @@
 # [Stargazers](https://mergify.notion.site/Stargazer-4cf5427e34a542f0aee4e829bb6d9035)
 
-
-
-
 ## Install and run
-
 ```sh
 # Dependencies
 poetry config virtualenvs.in-project true       # set .venv in local directory
@@ -20,7 +16,6 @@ pre-commit run --all-files
 ```
 
 ...Or via Docker
-
 ```sh
 # Build image
 docker build -t stargazer .
@@ -42,7 +37,7 @@ STARGAZER_TOKEN = <secret>
 ```
 
 ## Automated tests
-Unit and functionnal tests are available in `/tests/` with stdlib unittest (though I like pytest better).
-
+Unit and functionnal tests are available in `./tests` with stdlib unittest (though I like pytest better).
 ```sh
+python3 -m unittest discover -s tests -v
 ```
