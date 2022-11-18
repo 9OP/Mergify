@@ -60,4 +60,4 @@ class AuthError(ApiResponse):
 
 class GithubError(ApiResponse):
     def __init__(self, status: int, detail: str, **kwargs):
-        super().__init__(status, detail, **kwargs)
+        super().__init__(status, f"GITHUB ERROR: {detail}", **kwargs)
